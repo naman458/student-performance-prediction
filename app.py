@@ -291,19 +291,19 @@ def load_model(model_path):
 
 
 @st.cache_resource
-
 def get_mongo_client():
-
     uri = os.getenv("MONGODB_URI")
 
     if not uri:
+        try:
+            uri = st.secrets["MONGODB_URI"]
+        except Exception:
+            uri = None
 
+    if not uri:
         raise ValueError(
-
-            "MONGODB_URI was not found. Check that your project .env file "
-
-            "contains MONGODB_URI=your_mongodb_atlas_connection_string"
-
+            "MONGODB_URI was not found. Configure it in your "
+            ".env file locally or in Streamlit Cloud Secrets."
         )
 
     return MongoClient(uri, serverSelectionTimeoutMS=10000)
