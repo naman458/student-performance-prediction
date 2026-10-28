@@ -1,0 +1,12 @@
+@"
+streamlit
+pandas
+numpy
+matplotlib
+seaborn
+plotly
+scikit-learn
+pymongo
+python-dotenv
+joblib
+"@ | Set-Content requirements.txt
