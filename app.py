@@ -1176,6 +1176,47 @@ elif page == "Predict Student":
 
 elif page == "MongoDB Records":
 
+    
+    # Password protection for MongoDB CRUD operations
+    if "mongo_authenticated" not in st.session_state:
+        st.session_state["mongo_authenticated"] = False
+
+    if not st.session_state["mongo_authenticated"]:
+        st.subheader("MongoDB Records — Restricted Access")
+        st.write("Enter the password to access student database records.")
+
+        entered_password = st.text_input(
+            "CRUD access password",
+            type="password",
+            key="mongo_password_input",
+        )
+
+        if st.button("Unlock MongoDB Records"):
+            expected_password = os.getenv("CRUD_PASSWORD")
+
+            if not expected_password:
+                try:
+                    expected_password = st.secrets["CRUD_PASSWORD"]
+                except Exception:
+                    expected_password = None
+
+            if not expected_password:
+                st.error(
+                    "CRUD_PASSWORD is not configured. "
+                    "Set it in your local .env or Streamlit Cloud Secrets."
+                )
+            elif entered_password == expected_password:
+                st.session_state["mongo_authenticated"] = True
+                st.rerun()
+            else:
+                st.error("Incorrect password. Try again.")
+
+        st.stop()
+
+    if st.button("Lock MongoDB Records"):
+        st.session_state["mongo_authenticated"] = False
+        st.rerun()
+
     st.subheader("MongoDB Atlas: Student Records")
 
     st.write(
